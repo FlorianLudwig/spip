@@ -1,14 +1,11 @@
-# -*- coding: utf-8 -*-
+import spip.install
 
-import click
+def main():
+    spip.install.monkeypatch()
 
-@click.command()
-def main(args=None):
-    """Console script for spip"""
-    click.echo("Replace this message by putting your code into "
-                "spip.cli.main")
-    click.echo("See click documentation at http://click.pocoo.org/")
+    import pip
+    pip.main()
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
