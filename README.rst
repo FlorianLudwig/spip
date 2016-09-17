@@ -20,6 +20,9 @@ spip
 
 pip <3 dnf/apt-get
 
+.. image:: https://asciinema.org/a/5xrxo8azct86r0h6abbil8mec.png
+   :target: https://asciinema.org/a/5xrxo8azct86r0h6abbil8mec?autoplay=1
+
 
 Features
 --------
