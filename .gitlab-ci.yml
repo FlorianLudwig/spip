@@ -1,14 +1,18 @@
-fedora24:
+fedora24_py2:
   image: fedora:24
   script:
+    - dnf install -y python-pip
     - sh .ci_check.sh
 
-fedora25:
+fedora25_py2:
   image: fedora:25
   script:
+    - dnf install -y python-pip
     - sh .ci_check.sh
 
-ubuntu_16_04:
+ubuntu_16_04_py2:
   image: ubuntu:16.04
   script:
+    - apt-get update
+    - apt-get install -y python-pip
     - sh .ci_check.sh
