@@ -14,8 +14,13 @@ spip
      :target: https://pyup.io/repos/github/florianludwig/spip/
      :alt: Updates
 
+.. image:: https://gitlab.com/f-ludwig/spip/badges/master/build.svg)
+     :target: https://gitlab.com/f-ludwig/spip/commits/master)
+     :alt: gitlab CI
+
 
 pip <3 dnf/apt-get
+
 
 .. image:: https://asciinema.org/a/5xrxo8azct86r0h6abbil8mec.png
    :target: https://asciinema.org/a/5xrxo8azct86r0h6abbil8mec?autoplay=1

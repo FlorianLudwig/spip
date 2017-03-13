@@ -32,18 +32,20 @@ PACKAGES = {
     },
     'av': {
         'fedora': {
-            'run': ['git'],
-            'build': ['ffmpeg-devel']
+            'build': ['git', 'ffmpeg-devel'],
+            'run': ['ffmpeg']
         }
     },
     'cryptography': {
         'fedora': {
-            'build': ['libffi-devel', 'openssl-devel']
+            'build': ['libffi-devel', 'openssl-devel'],
+            'run': ['libffi', 'openssl']
         }
     },
     'lxml': {
         'fedora': {
-            'build': ['libxml2-devel', 'libxslt-devel']
+            'build': ['libxml2-devel', 'libxslt-devel'],
+            'run': ['libxml2', 'libxslt']
         }
     }
 }
