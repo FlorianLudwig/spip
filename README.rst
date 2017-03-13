@@ -14,7 +14,7 @@ spip
      :target: https://pyup.io/repos/github/florianludwig/spip/
      :alt: Updates
 
-.. image:: https://gitlab.com/f-ludwig/spip/badges/master/build.svg)
+.. image:: https://gitlab.com/f-ludwig/spip/badges/master/build.svg
      :target: https://gitlab.com/f-ludwig/spip/commits/master)
      :alt: gitlab CI
 
