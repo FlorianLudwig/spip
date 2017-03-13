@@ -1,0 +1,14 @@
+fedora24:
+  image: fedora:24
+  script:
+    - sh .ci_check.sh
+
+fedora25:
+  image: fedora:25
+  script:
+    - sh .ci_check.sh
+
+ubuntu_16_04:
+  image: ubuntu:16.04
+  script:
+    - sh .ci_check.sh
