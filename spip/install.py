@@ -74,6 +74,16 @@ class System(object):
         build_packages = set()
         run_packages = set()
 
+        if dep is None:
+            # we are installing a directory / file
+            #
+            # since to reliable determine the package name
+            # we need to execute the setup.py we basically are screwed
+            # at this poined because the setup.py might have dependencies.
+            #
+            # For now we don't even try to solve this case.
+            return
+
         # ignore version for now
         if '=' in dep:
             dep = dep[:dep.find('=')]
