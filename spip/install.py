@@ -60,6 +60,7 @@ PACKAGES = {
 class System(object):
     def __init__(self):
         self.build_packages = set()
+        self.run_packages = set()
 
     @classmethod
     def get_current(cls):
@@ -98,14 +99,16 @@ class System(object):
         to_install = set(self.build_system)
         to_install.update(build_packages)
         to_install.update(run_packages)
+        self.run_packages.update(run_packages)
         self.build_packages.update(build_packages)
         if to_install:
             self.install(to_install)
 
     def cleanup(self):
         to_remove = set(self.build_packages).union(self.build_system)
-        for pkg in self.initial_packages:
+        for pkg in self.initial_packages.union(self.run_packages):
             to_remove.discard(pkg)
+
         if to_remove:
             self.remove(to_remove)
 
@@ -153,6 +156,11 @@ class Fedora(System):
     def remove(self, packages):
         for pkg in packages:
             self.base.remove(pkg)
+
+        # ensure we are not losing runtime packages
+        for pkg in self.run_packages:
+            self.base.install(pkg)
+
         self.base.resolve()
         self.base.do_transaction()
         self._get_dnf()
