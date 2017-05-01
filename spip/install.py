@@ -54,6 +54,12 @@ PACKAGES = {
             'build': ['libxml2-devel', 'libxslt-devel'],
             'run': ['libxml2', 'libxslt']
         }
+    },
+    'pycurl': {
+        'fedora': {
+            'collect': ['libcurl-devel'],
+            'run': ['libcurl']
+        }
     }
 }
 
