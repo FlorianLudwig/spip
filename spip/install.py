@@ -11,6 +11,12 @@ logger = logging.getLogger(__name__)
 
 
 PACKAGES = {
+    'cairocffi': {
+        'fedora': {
+            'collect': ['libffi-devel'],
+            'run': ['libffi']
+        }
+    },
     'pillow': {
         'fedora': {
             'build': ['lcms2-devel', 'zlib-devel', 'libjpeg-turbo-devel', 'freetype-devel', 'openjpeg2-devel', 'libtiff-devel', 'libwebp-devel'],
@@ -28,7 +34,8 @@ PACKAGES = {
     },
     'av': {
         'fedora': {
-            'build': ['git', 'ffmpeg-devel'],
+            'collect': ['git'],
+            'build': ['ffmpeg-devel'],
             'run': ['ffmpeg']
         }
     },
@@ -47,6 +54,9 @@ PACKAGES = {
 }
 
 class System(object):
+    def __init__(self):
+        self.build_packages = set()
+
     @classmethod
     def get_current(cls):
         system = platform.dist()[0]
@@ -55,30 +65,32 @@ class System(object):
         else:
             return Ubuntu()
 
-    def install_python_pkg_deps(self, python_packages):
+    def install_python_pkg_deps(self, dep):
+        stages = ['build', 'run', 'collect']
         build_packages = set()
         run_packages = set()
-        for dep in python_packages:
-            # ignore version for now
-            if '=' in dep:
-                dep = dep[:dep.find('=')]
 
-            package = dep.strip().lower()
-            if package in PACKAGES:
-                deps = PACKAGES[package][self.name]
-                build_packages.update(deps.get('build', []))
-                run_packages.update(deps.get('run', []))
+        # ignore version for now
+        if '=' in dep:
+            dep = dep[:dep.find('=')]
+
+        package = dep.strip().lower()
+        if package in PACKAGES:
+            deps = PACKAGES[package][self.name]
+            build_packages.update(deps.get('collect', []))
+            build_packages.update(deps.get('build', []))
+            run_packages.update(deps.get('run', []))
 
         to_install = set(self.build_system)
         to_install.update(build_packages)
         to_install.update(run_packages)
-        self.build_packages = build_packages
+        self.build_packages.update(build_packages)
         if to_install:
             self.install(to_install)
 
     def cleanup(self):
         to_remove = set(self.build_packages).union(self.build_system)
-        for pkg in self.installed_packages:
+        for pkg in self.initial_packages:
             to_remove.discard(pkg)
         if to_remove:
             self.remove(to_remove)
@@ -97,12 +109,13 @@ class Fedora(System):
     name = 'fedora'
 
     def __init__(self):
+        super(Fedora, self).__init__()
+
         global dnf
         import dnf
         self.base = None
         self._get_dnf()
-        installed = self.base.sack.query().installed()
-        self.installed_packages = [p.name for p in installed.run()]
+        self.initial_packages = self.installed_packages
 
     def _get_dnf(self):
         if self.base is not None:
@@ -111,10 +124,13 @@ class Fedora(System):
         self.base.conf.assumeyes = True
         self.base.read_all_repos()
         self.base.fill_sack(load_system_repo='auto')
+        installed = self.base.sack.query().installed()
+        self.installed_packages = set(p.name for p in installed.run())
 
     def install(self, packages):
         for pkg in packages:
-            self.base.install(pkg)
+            if pkg not in self.installed_packages:
+                self.base.install(pkg)
         self.base.resolve()
         self.base.download_packages(self.base.transaction.install_set)
         self.base.do_transaction()
@@ -133,18 +149,23 @@ class Ubuntu(System):
     name = 'ubuntu'
 
 
-
 def monkeypatch():
+    system = System.get_current()
+
     def install(self, *args, **kwargs):
-        pip.req.RequirementSet.__doc__
+        pip.req.RequirementSet.install.__doc__
 
-        # collecting system dependencies
-        py_pkgs = [pkg.name for pkg in self._to_install()]
-
-        system = System.get_current()
-        system.install_python_pkg_deps(py_pkgs)
+        # run install and remove installed build dependencies afterward
         original_install(self, *args, **kwargs)
         system.cleanup()
 
+    def _prepare_file(self, *args, **kwargs):
+        pip.req.RequirementSet._prepare_file.__doc__
+        system.install_python_pkg_deps(args[1].name)
+        return original_collect(self, *args, **kwargs)
+
     original_install = pip.req.RequirementSet.install
     pip.req.RequirementSet.install = install
+
+    original_collect = pip.req.RequirementSet._prepare_file
+    pip.req.RequirementSet._prepare_file = _prepare_file
