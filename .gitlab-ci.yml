@@ -1,18 +1,22 @@
 fedora24_py2:
   image: fedora:24
   script:
-    - dnf install -y python-pip
-    - sh .ci_check.sh
+    - dnf install -y python-pip python2-dnf
+    - pip install -e .
+    - spip install py.test
+    - py.test tests
 
 fedora25_py2:
   image: fedora:25
   script:
-    - dnf install -y python-pip
-    - sh .ci_check.sh
+    - dnf install -y python-pip python2-dnf
+    - spip install py.test
+    - py.test tests
 
 ubuntu_16_04_py2:
   image: ubuntu:16.04
   script:
     - apt-get update
     - apt-get install -y python-pip
-    - sh .ci_check.sh
+    - spip install py.test
+    - py.test tests
