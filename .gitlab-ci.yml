@@ -3,14 +3,15 @@ fedora24_py2:
   script:
     - dnf install -y python-pip python2-dnf
     - pip install -e .
-    - spip install py.test
+    - spip install pytest
     - py.test tests
 
 fedora25_py2:
   image: fedora:25
   script:
     - dnf install -y python-pip python2-dnf
-    - spip install py.test
+    - pip install -e .
+    - spip install pytest
     - py.test tests
 
 ubuntu_16_04_py2:
@@ -18,5 +19,6 @@ ubuntu_16_04_py2:
   script:
     - apt-get update
     - apt-get install -y python-pip
-    - spip install py.test
+    - pip install -e .
+    - spip install pytest
     - py.test tests
