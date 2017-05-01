@@ -147,7 +147,10 @@ class Fedora(System):
     def install(self, packages):
         for pkg in packages:
             if pkg not in self.installed_packages:
-                self.base.install(pkg)
+                try:
+                    self.base.install(pkg)
+                except:
+                    print("dnf error finding: " + pkg)
         self.base.resolve()
         self.base.download_packages(self.base.transaction.install_set)
         self.base.do_transaction()
