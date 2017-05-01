@@ -1,6 +1,8 @@
 fedora24_py2:
   image: fedora:24
   script:
+    # add rpmfusion to be able to test av package (needs ffmpeg)
+    - dnf install -y http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
     - dnf install -y python-pip python2-dnf
     - pip install -e .
     - spip install pytest
@@ -9,6 +11,8 @@ fedora24_py2:
 fedora25_py2:
   image: fedora:25
   script:
+    # add rpmfusion to be able to test av package (needs ffmpeg)
+    - dnf install -y http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
     - dnf install -y python-pip python2-dnf
     - pip install -e .
     - spip install pytest
