@@ -11,6 +11,8 @@ with open('HISTORY.rst') as history_file:
 
 requirements = [
     'pip',
+    'pyyaml',
+    'pkg_resources',
 ]
 
 test_requirements = [

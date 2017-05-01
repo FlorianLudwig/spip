@@ -10,58 +10,13 @@ import platform
 
 import pip.req
 import pip.commands.install
+import yaml
+import pkg_resources
 
 logger = logging.getLogger(__name__)
 
-
-PACKAGES = {
-    'cairocffi': {
-        'fedora': {
-            'collect': ['libffi-devel'],
-            'run': ['libffi']
-        }
-    },
-    'pillow': {
-        'fedora': {
-            'build': ['lcms2-devel', 'zlib-devel', 'libjpeg-turbo-devel', 'freetype-devel', 'openjpeg2-devel', 'libtiff-devel', 'libwebp-devel'],
-            'run': ['lcms2', 'zlib', 'libjpeg-turbo', 'freetype', 'openjpeg2', 'libtiff', 'libwebp']
-        },
-        'ubuntu': {
-            'build': ['liblcms2-dev', 'liblz-dev', 'libjpeg-turbo8-dev', 'libfreetype6-dev', 'libopenjpeg-dev', 'libtiff5-dev', 'libwebp-dev'],
-            'run': ['liblcms2-2']
-        }
-    },
-    'gitpython': {
-        'fedora': {
-            'run': ['git']
-        }
-    },
-    'av': {
-        'fedora': {
-            'collect': ['git'],
-            'build': ['ffmpeg-devel'],
-            'run': ['ffmpeg']
-        }
-    },
-    'cryptography': {
-        'fedora': {
-            'build': ['libffi-devel', 'openssl-devel'],
-            'run': ['libffi', 'openssl']
-        }
-    },
-    'lxml': {
-        'fedora': {
-            'build': ['libxml2-devel', 'libxslt-devel'],
-            'run': ['libxml2', 'libxslt']
-        }
-    },
-    'pycurl': {
-        'fedora': {
-            'collect': ['libcurl-devel'],
-            'run': ['libcurl']
-        }
-    }
-}
+PACKAGE_DATA_PATH = pkg_resources.resource_filename('spip', 'packages.yml')
+PACKAGES = yaml.load(open(PACKAGE_DATA_PATH))
 
 class System(object):
     def __init__(self):
