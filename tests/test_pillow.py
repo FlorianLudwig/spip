@@ -19,3 +19,5 @@ def test_install_pillow():
 
     # runtime requirements should be present
     assert package_data['run'][0] in system.installed_packages
+
+    import PIL.Image

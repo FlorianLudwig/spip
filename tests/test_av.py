@@ -23,6 +23,8 @@ def test_install_av():
     # runtime requirements should be present
     assert package_data['run'][0] in system.initial_packages
 
+    import av
+
 
 def test_install_av_and_gitpython():
     # git python has a runtime dependency on git
