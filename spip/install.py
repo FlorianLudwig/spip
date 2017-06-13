@@ -106,15 +106,20 @@ class Fedora(System):
         self.installed_packages = set(p.name for p in installed.run())
 
     def install(self, packages):
+        cmd = ['dnf', 'install', '-y']
+
         for pkg in packages:
             if pkg not in self.installed_packages:
-                try:
-                    self.base.install(pkg)
-                except:
-                    print("dnf error finding: " + pkg)
-        self.base.resolve()
-        self.base.download_packages(self.base.transaction.install_set)
-        self.base.do_transaction()
+                cmd.append(pkg)
+        # TODO causes memory leak
+        #         try:
+        #             self.base.install(pkg)
+        #         except:
+        #             print("dnf error finding: " + pkg)
+        # self.base.resolve()
+        # self.base.download_packages(self.base.transaction.install_set)
+        # self.base.do_transaction()
+        subprocess.Popen(cmd).wait()
         self._get_dnf()
 
     def remove(self, packages):
