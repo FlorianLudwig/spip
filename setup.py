@@ -19,7 +19,7 @@ test_requirements = [
 
 setup(
     name='spip',
-    version='0.3.2',
+    version='0.4.0',
     description="pip <3 dnf/apt-get",
     long_description=readme + '\n\n' + history,
     author="Florian Ludwig",
