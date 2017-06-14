@@ -109,7 +109,7 @@ class Fedora(System):
         cmd = ['dnf', 'install', '-y']
 
         for pkg in packages:
-            if pkg not in self.installed_packages:
+            # if pkg not in self.installed_packages:
                 cmd.append(pkg)
         # TODO causes memory leak
         #         try:
@@ -120,7 +120,7 @@ class Fedora(System):
         # self.base.download_packages(self.base.transaction.install_set)
         # self.base.do_transaction()
         subprocess.Popen(cmd).wait()
-        self._get_dnf()
+        # self._get_dnf()
 
     def remove(self, packages):
         for pkg in packages:
