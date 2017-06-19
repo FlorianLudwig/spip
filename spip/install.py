@@ -106,23 +106,47 @@ class Fedora(System):
         self.installed_packages = set(p.name for p in installed.run())
 
     def install(self, packages):
+        """install packages by calling dnf as subprocess"""
         cmd = ['dnf', 'install', '-y']
 
         for pkg in packages:
             # if pkg not in self.installed_packages:
-                cmd.append(pkg)
-        # TODO causes memory leak
-        #         try:
-        #             self.base.install(pkg)
-        #         except:
-        #             print("dnf error finding: " + pkg)
-        # self.base.resolve()
-        # self.base.download_packages(self.base.transaction.install_set)
-        # self.base.do_transaction()
-        subprocess.Popen(cmd).wait()
-        # self._get_dnf()
+            cmd.append(pkg)
+
+        if packages:
+            subprocess.Popen(cmd).wait()
+
+    def install_api(self, packages):
+        """install packages using the dnf python api
+
+        XXX not used because of memory leak, see
+        https://bugzilla.redhat.com/show_bug.cgi?id=1461423"""
+
+        for pkg in packages:
+            if pkg not in self.installed_packages:
+                try:
+                    self.base.install(pkg)
+                except:
+                    print("dnf error finding: " + pkg)
+        self.base.resolve()
+        self.base.download_packages(self.base.transaction.install_set)
+        self.base.do_transaction()
+        self._get_dnf()
 
     def remove(self, packages):
+        """remove packages by calling dnf as subprocess"""
+        pkgs_to_remove = packages[:]
+        for pkg in self.run_packages:
+            pkgs_to_remove.remove(pkg)
+
+        if pkgs_to_remove:
+            cmd = ['dnf', 'remove'] + pkgs_to_remove
+            subprocess.Popen(cmd).wait()
+
+    def remove_api(self, packages):
+        """using dnf-python
+
+        not used because of memory leak"""
         for pkg in packages:
             self.base.remove(pkg)
 
