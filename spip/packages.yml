@@ -41,3 +41,8 @@
   'fedora':
     'collect': ['libcurl-devel']
     'run': ['libcurl']
+
+  'python-lzo':
+    'fedora':
+      'build': ['lzo-devel']
+      'run': ['lzo']
