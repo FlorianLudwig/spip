@@ -4,6 +4,11 @@
     'collect': ['git']
     'run': ['ffmpeg']
 
+'Cartopy':
+  'ubuntu':
+    build: ['libproj-dev', 'libgeos-dev']
+    run: ['libproj', 'libgeos']
+
 'cairocffi':
   'fedora':
     'collect': ['libffi-devel']
