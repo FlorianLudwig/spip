@@ -38,8 +38,8 @@
       'libwebp']
   'ubuntu':
     'build': ['liblcms2-dev', 'liblz-dev',
-      'libjpeg-turbo8-dev', 'libfreetype6-dev',
-      'libopenjpeg-dev', 'libtiff5-dev', 'libwebp-dev']
+      'libjpeg62-turbo-dev', 'libfreetype6-dev',
+      'libtiff5-dev', 'libwebp-dev']
     'run': ['liblcms2-2']
 
 'pycurl':
