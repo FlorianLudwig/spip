@@ -2,23 +2,23 @@ import sys
 import subprocess
 
 import click
+import dparse 
 
-from . import install
+import spip.install
 
-# import spip.install
 
 @click.group()
 def main():
     pass
 
 
-# @main.command()
-# context_settings=dict(
-#     allow_extra_args=True,
-# ))
-# @click.option('--pip', )
-# @click.argument('install_args', nargs=-1, type=click.UNPROCESSED)
-# def install(install_args):
+@main.command(context_settings=dict(
+    allow_extra_args=True,
+))
+@click.option('--pip', )
+@click.argument('install_args', nargs=-1, type=click.UNPROCESSED)
+def install(install_args):
+    raise NotImplementedError()
 #     system = spip.install.System.get_current()
 #     print(install_args)
     # with open(sys.argv[1]) as f:
@@ -35,32 +35,25 @@ def main():
     
 
 def read_requirements(path):
-    with open(path) as f:
-        for line in f:
-            line = line.split('#')[0]
-            line = line.strip()
-            if line:
-                yield line
+    file_content = open(path).read()
+    parsed_req = dparse.parse(file_content, file_type="requirements.txt")
+    return parsed_req.dependencies
 
 
 @main.command()
+@click.option('--requirement', '-r', multiple=True, type=click.Path(exists=True))
 @click.argument('install_args', nargs=-1, type=click.UNPROCESSED)
-def sinstall(install_args):
-    system = install.System.get_current()
-    mode = None
-    for arg in install_args:
-        if arg.startswith('-'):
-            mode = arg.lstrip('-')
-            continue
-        
-        if mode == 'r':
-            for req in read_requirements(arg):
-                system.install_python_pkg_deps(req)
-        else:
-            system.install_python_pkg_deps(arg)
-        mode = None
+def sinstall(requirement, install_args):
+    system = spip.install.System.get_current()
     
-
+    for req in requirement:
+        for dep in read_requirements(req):
+            system.install_python_pkg_deps(dep)
+            
+    for dep in install_args:
+        pkg = dparse.parser.RequirementsTXTLineParser.parse(dep)
+        system.install_python_pkg_deps(pkg)
+    
 
 if __name__ == '__main__':
     main()

@@ -13,6 +13,7 @@ requirements = [
     'pip>=10',
     'pyyaml',
     'click',
+    'dparse'
 ]
 
 test_requirements = [
@@ -20,7 +21,7 @@ test_requirements = [
 
 setup(
     name='spip',
-    version='0.4.0',
+    version='0.5.0a2',
     description="pip <3 dnf/apt-get",
     long_description=readme + '\n\n' + history,
     author="Florian Ludwig",

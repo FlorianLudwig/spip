@@ -35,21 +35,7 @@ class System(object):
         build_packages = set()
         run_packages = set()
 
-        if dep is None:
-            # we are installing a directory / file
-            #
-            # since to reliable determine the package name
-            # we need to execute the setup.py we basically are screwed
-            # at this poined because the setup.py might have dependencies.
-            #
-            # For now we don't even try to solve this case.
-            return
-
-        # ignore version for now
-        if '=' in dep:
-            dep = dep[:dep.find('=')]
-
-        package = dep.strip().lower()
+        package = dep.name.strip().lower()
         if package in PACKAGES:
             deps = PACKAGES[package][self.name]
             build_packages.update(deps.get('collect', []))
@@ -65,12 +51,13 @@ class System(object):
             self.install(to_install)
 
     def cleanup(self):
-        to_remove = set(self.build_packages).union(self.build_system)
-        for pkg in self.initial_packages.union(self.run_packages):
+        to_remove = self.build_packages.union(self.build_system)
+        to_keep = self.initial_packages.union(self.run_packages)
+
+        for pkg in to_keep:
             to_remove.discard(pkg)
 
-        if to_remove:
-            self.remove(to_remove)
+        self.remove(to_remove)
 
     def install(self, packages):
         """install given packages"""
@@ -87,7 +74,6 @@ class Fedora(System):
 
     def __init__(self):
         super(Fedora, self).__init__()
-
         global dnf
         import dnf
         self.base = None
@@ -134,12 +120,8 @@ class Fedora(System):
 
     def remove(self, packages):
         """remove packages by calling dnf as subprocess"""
-        pkgs_to_remove = packages[:]
-        for pkg in self.run_packages:
-            pkgs_to_remove.remove(pkg)
-
-        if pkgs_to_remove:
-            cmd = ['dnf', 'remove'] + pkgs_to_remove
+        if packages:
+            cmd = ['dnf', 'remove'] + list(packages)
             subprocess.Popen(cmd).wait()
 
     def remove_api(self, packages):
