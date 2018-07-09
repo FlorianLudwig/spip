@@ -82,7 +82,7 @@ class System(object):
 
 
 class Fedora(System):
-    build_system = ['redhat-rpm-config', 'gcc', 'python-devel']
+    build_system = ['redhat-rpm-config', 'gcc', 'python3-devel']
     name = 'fedora'
 
     def __init__(self):
