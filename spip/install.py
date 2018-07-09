@@ -8,8 +8,7 @@ import sys
 import subprocess
 import platform
 
-import pip.req
-import pip.commands.install
+import pip._internal.req
 import yaml
 import pkg_resources
 
@@ -17,6 +16,7 @@ logger = logging.getLogger(__name__)
 
 PACKAGE_DATA_PATH = pkg_resources.resource_filename('spip', 'packages.yml')
 PACKAGES = yaml.load(open(PACKAGE_DATA_PATH))
+
 
 class System(object):
     def __init__(self):
@@ -168,19 +168,19 @@ def monkeypatch():
     system = System.get_current()
 
     def install(self, *args, **kwargs):
-        pip.req.RequirementSet.install.__doc__
+        pip._internal.req.RequirementSet.install.__doc__
 
         # run install and remove installed build dependencies afterward
         original_install(self, *args, **kwargs)
         system.cleanup()
 
     def _prepare_file(self, *args, **kwargs):
-        pip.req.RequirementSet._prepare_file.__doc__
+        pip._internal.req.RequirementSet._prepare_file.__doc__
         system.install_python_pkg_deps(args[1].name)
         return original_collect(self, *args, **kwargs)
 
-    original_install = pip.req.RequirementSet.install
-    pip.req.RequirementSet.install = install
+    original_install = pip._internal.req.RequirementSet.install
+    pip._internal.req.RequirementSet.install = install
 
-    original_collect = pip.req.RequirementSet._prepare_file
-    pip.req.RequirementSet._prepare_file = _prepare_file
+    original_collect = pip._internal.req.RequirementSet._prepare_file
+    pip._internal.req.RequirementSet._prepare_file = _prepare_file
