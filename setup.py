@@ -12,6 +12,7 @@ with open('HISTORY.rst') as history_file:
 requirements = [
     'pip>=10',
     'pyyaml',
+    'click',
 ]
 
 test_requirements = [
